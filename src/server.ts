@@ -1,2 +1,2 @@
-import app from './app'
-app.listen(3000)
+import App from './app'
+(new App()).express.listen(3000)
