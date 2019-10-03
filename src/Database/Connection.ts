@@ -1,11 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose, { Mongoose } from 'mongoose'
 
 export default class Connection {
-  public static async database (db?: string): Promise<void> {
+  public static async database (db?: string): Promise<Mongoose> {
     const host = process.env.DB_HOST
     const port = process.env.DB_PORT
     const params = process.env.DB_PARAMS
-    await mongoose.connect(
+    // const conn = await mongoose.createConnection(
+    const conn = await mongoose.connect(
       `mongodb://${host}:${port}?${params}`,
       {
         user: process.env.DB_USERNAME,
@@ -15,5 +16,7 @@ export default class Connection {
         useUnifiedTopology: true
       }
     )
+
+    return conn
   }
 }
