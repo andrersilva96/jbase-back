@@ -9,8 +9,12 @@ class UserController {
   }
 
   public async store (req: Request, res: Response): Promise<Response> {
-    const user = await User.create(req.body)
-    return res.json(user)
+    try {
+      const user = await User.create(req.body)
+      return res.json(user)
+    } catch (err) {
+      if (err.code === 11000) return res.status(409).json({ success: false, message: 'The user already exists.' })
+    }
   }
 }
 
