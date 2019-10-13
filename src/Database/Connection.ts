@@ -13,6 +13,7 @@ export default class Connection {
         pass: process.env.DB_PASSWORD,
         dbName: db || process.env.DB_DATABASE,
         useNewUrlParser: true,
+        useCreateIndex: true,
         useUnifiedTopology: true
       }
     )
