@@ -21,7 +21,7 @@ class DynamicController {
       })
     }
 
-    return res.status(201).json({ message: 'The table has been created.' })
+    return res.status(201).json({ success: true, message: 'Record created.' })
   }
 
   public async list (req: Request, res: Response) : Promise<Response> {
