@@ -29,9 +29,9 @@ class AuthController {
 
   public async newToken (req: Request, res: Response) : Promise<Response> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decoded : any = jwt.decode(req.headers.authorization, { complete: true })
+    const decoded : any = jwt.decode(req.headers.authorization)
     const token = jwt.sign(
-      { userId: decoded.payload.userId },
+      { userId: decoded.userId },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     )

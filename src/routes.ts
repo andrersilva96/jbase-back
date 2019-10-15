@@ -9,6 +9,8 @@ routes.post('/login', AuthController.login)
 routes.get('/newToken', AuthController.newToken)
 routes.get('/users', UserController.index)
 routes.post('/users', UserController.store)
-routes.post('/insert', DynamicController.store)
+
+routes.use('/dynamic/', AuthController.validToken)
+routes.post('/dynamic/insert', DynamicController.store)
 
 export default routes
