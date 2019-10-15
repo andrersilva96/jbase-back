@@ -12,5 +12,6 @@ routes.post('/users', UserController.store)
 
 routes.use('/dynamic/', AuthController.validToken)
 routes.post('/dynamic/insert', DynamicController.store)
+routes.get('/dynamic/:table', DynamicController.list)
 
 export default routes

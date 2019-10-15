@@ -23,6 +23,15 @@ class DynamicController {
 
     return res.status(201).json({ message: 'The table has been created.' })
   }
+
+  public async list (req: Request, res: Response) : Promise<Response> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded : any = jwt.decode(req.headers.authorization)
+    Connection.database('records_' + decoded.userId)
+
+    const data = await Dynamic(req.params.table).find()
+    return res.status(200).json(data)
+  }
 }
 
 export default new DynamicController()
