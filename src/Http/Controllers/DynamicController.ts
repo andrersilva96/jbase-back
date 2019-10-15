@@ -32,6 +32,15 @@ class DynamicController {
     const data = await Dynamic(req.params.table).find()
     return res.status(200).json(data)
   }
+
+  public async remove (req: Request, res: Response) : Promise<Response> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded : any = jwt.decode(req.headers.authorization)
+    Connection.database('records_' + decoded.userId)
+    await Dynamic(req.params.table).deleteOne({ _id: req.params.id })
+
+    return res.status(204).json({ success: true, message: 'The record has been removed.' })
+  }
 }
 
 export default new DynamicController()
