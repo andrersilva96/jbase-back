@@ -5,8 +5,8 @@ import Connection from '../../Database/Connection'
 import * as jwt from 'jsonwebtoken'
 
 class DynamicController {
-  public async store (req: Request, res: Response) : Promise<Response> {
-    if (!Validate.json(req.body, false, true)) {
+  public async insertMany (req: Request, res: Response) : Promise<Response> {
+    if (!Validate.json(req.body)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
@@ -20,6 +20,19 @@ class DynamicController {
         if (err) return res.status(400).json({ success: false, message: 'An error has occurred.' })
       })
     }
+
+    return res.status(201).json({ success: true, message: 'Record created.' })
+  }
+
+  public async insertOne (req: Request, res: Response) : Promise<Response> {
+    if (!Validate.json(req.body, true)) {
+      return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded : any = jwt.decode(req.headers.authorization)
+    Connection.database('records_' + decoded.userId)
+    await Dynamic(req.params.table).create(req.body)
 
     return res.status(201).json({ success: true, message: 'Record created.' })
   }
