@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken'
 
 class DynamicController {
   public async store (req: Request, res: Response) : Promise<Response> {
-    if (Validate.json(req.body, true)) {
+    if (!Validate.json(req.body, false, true)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
@@ -46,6 +46,10 @@ class DynamicController {
   }
 
   public async update (req: Request, res: Response) : Promise<Response> {
+    if (!Validate.json(req.body, true)) {
+      return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     Connection.database('records_' + decoded.userId)
