@@ -37,9 +37,21 @@ class DynamicController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     Connection.database('records_' + decoded.userId)
-    await Dynamic(req.params.table).deleteOne({ _id: req.params.id })
+    const data = await Dynamic(req.params.table).deleteOne({ _id: req.params.id })
+    if (data.n === 1) {
+      return res.status(200).json({ success: true, message: 'The record has been removed.' })
+    }
 
-    return res.status(204).json({ success: true, message: 'The record has been removed.' })
+    return res.status(204).json()
+  }
+
+  public async update (req: Request, res: Response) : Promise<Response> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded : any = jwt.decode(req.headers.authorization)
+    Connection.database('records_' + decoded.userId)
+    await Dynamic(req.params.table).updateOne({ _id: req.params.id }, req.body)
+
+    return res.status(200).json({ success: true, message: 'The record has been updated.' })
   }
 }
 

@@ -14,5 +14,6 @@ routes.use('/dynamic/', AuthController.validToken)
 routes.post('/dynamic/insert', DynamicController.store)
 routes.get('/dynamic/:table', DynamicController.list)
 routes.delete('/dynamic/:table/:id', DynamicController.remove)
+routes.put('/dynamic/:table/:id', DynamicController.update)
 
 export default routes
