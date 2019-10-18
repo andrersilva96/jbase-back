@@ -38,12 +38,21 @@ class DynamicController {
   }
 
   public async list (req: Request, res: Response) : Promise<Response> {
+    if (Object.keys(req.body).length !== 0 && !Validate.json(req.body, true)) {
+      return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     Connection.database('records_' + decoded.userId)
 
-    const data = await Dynamic(req.params.table).find()
-    return res.status(200).json(data)
+    try {
+      const data = await Dynamic(req.params.table).find(req.body)
+      if (data.length) {
+        return res.status(200).json(data)
+      }
+    } catch (err) {}
+    return res.status(204).json()
   }
 
   public async remove (req: Request, res: Response) : Promise<Response> {
