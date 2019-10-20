@@ -8,10 +8,19 @@ class UserController {
     return res.json(users)
   }
 
-  public async store (req: Request, res: Response): Promise<Response> {
+  public async insert (req: Request, res: Response): Promise<Response> {
     try {
-      const user = await User.create(req.body)
-      return res.json(user)
+      await User.create(req.body)
+      return res.json({ success: true, message: 'The user has been created.' })
+    } catch (err) {
+      if (err.code === 11000) return res.status(409).json({ success: false, message: 'The user already exists.' })
+    }
+  }
+
+  public async update (req: Request, res: Response): Promise<Response> {
+    try {
+      await User.updateOne({ _id: req.params.id }, req.body)
+      return res.json({ success: true, message: 'The user has been updated.' })
     } catch (err) {
       if (err.code === 11000) return res.status(409).json({ success: false, message: 'The user already exists.' })
     }

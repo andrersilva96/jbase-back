@@ -14,7 +14,8 @@ export default class Connection {
         dbName: db || process.env.DB_DATABASE,
         useNewUrlParser: true,
         useCreateIndex: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: false
       }
     )
 

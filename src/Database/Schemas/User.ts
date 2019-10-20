@@ -21,6 +21,16 @@ UserSchema.pre('save', function save (next) {
   })
 })
 
+UserSchema.pre('updateOne', function (next) {
+  const data = this.getUpdate()
+  bcrypt.hash(data.password, bcrypt.genSaltSync(7), null, (err: Error, hash: string) => {
+    if (err) { return next(err) }
+    data.password = hash
+    this.update({}, data).exec()
+    next()
+  })
+})
+
 UserSchema.method('comparePassword', function (password: string): boolean {
   return bcrypt.compareSync(password, this.password)
 })
