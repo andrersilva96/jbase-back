@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { Dynamic } from '../../Database/Schemas/Dynamic'
 import { Validate } from '../../Services/ValidateService'
@@ -10,7 +11,6 @@ class DynamicController {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
 
     const user = await User.findById(decoded.userId)
@@ -34,7 +34,6 @@ class DynamicController {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     await Dynamic('records_' + decoded.userId, req.params.table).create(req.body)
 
@@ -46,7 +45,6 @@ class DynamicController {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
 
     try {
@@ -59,7 +57,6 @@ class DynamicController {
   }
 
   public async remove (req: Request, res: Response) : Promise<Response> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     const data = await Dynamic('records_' + decoded.userId, req.params.table).deleteOne({ _id: req.params.id })
     if (data.n === 1) {
@@ -74,7 +71,6 @@ class DynamicController {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
     await Dynamic('records_' + decoded.userId, req.params.table).updateOne({ _id: req.params.id }, req.body)
 
