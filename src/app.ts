@@ -3,7 +3,6 @@ import cors from 'cors'
 import * as dotenv from 'dotenv'
 import routes from './routes'
 import Handler from './Http/Middlewares/Handler'
-import Connection from './Database/Connection'
 
 export default class App {
   public express: express.Application
@@ -17,9 +16,6 @@ export default class App {
 
     // Middlewares
     this.express.use(Handler.render)
-
-    // Database
-    Connection.database()
 
     // Routes
     this.express.use(routes)

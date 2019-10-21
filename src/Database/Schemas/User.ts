@@ -1,19 +1,22 @@
-import { Document, Schema, Model, model } from 'mongoose'
+import { Document, Schema, Model } from 'mongoose'
 import { UserInterface } from '../Interfaces/UserInterface'
 import bcrypt from 'bcrypt-nodejs'
+import Mongo from '../Mongo'
 
 export interface UserModel extends UserInterface, Document {}
 
 const UserSchema = new Schema({
   email: { type: String, unique: true },
   name: String,
-  password: String
+  password: String,
+  tables: []
 }, {
   timestamps: true
 })
 
 UserSchema.pre('save', function save (next) {
   const user = this as UserModel
+  if (!user.isModified('password')) return next()
   bcrypt.hash(user.password, bcrypt.genSaltSync(7), null, (err: Error, hash: string) => {
     if (err) { return next(err) }
     user.password = hash
@@ -42,4 +45,7 @@ UserSchema.set('toJSON', {
   }
 })
 
-export const User: Model<UserModel> = model<UserModel>('User', UserSchema)
+// export const User: Model<UserModel> = Mongo.database().model<UserModel>('User', UserSchema)
+// export const User = model<UserModel>('User', UserSchema)
+
+export const User: Model<UserModel> = Mongo.database().model<UserModel>('User', UserSchema)

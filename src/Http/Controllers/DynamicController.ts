@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import { Dynamic } from '../../Database/Schemas/Dynamic'
 import { Validate } from '../../Services/ValidateService'
-import Connection from '../../Database/Connection'
 import * as jwt from 'jsonwebtoken'
+import { User } from '../../Database/Schemas/User'
 
 class DynamicController {
   public async insertMany (req: Request, res: Response) : Promise<Response> {
@@ -12,11 +12,16 @@ class DynamicController {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
-    Connection.database('records_' + decoded.userId)
+
+    const user = await User.findById(decoded.userId)
+    if (user && user.tables.length + Object.keys(req.body).length >= 10) {
+      return res.status(422).json({ success: false, message: 'You have many tables, try to let at least 10.' })
+    }
+    user.tables = user.tables.concat(Object.keys(req.body))
+    await user.save()
 
     for (const obj in req.body) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      await Dynamic(obj).insertMany(req.body[obj], (err, doc) => {
+      await Dynamic('records_' + decoded.userId, obj).insertMany(req.body[obj], (err) => {
         if (err) return res.status(400).json({ success: false, message: 'An error has occurred.' })
       })
     }
@@ -31,8 +36,7 @@ class DynamicController {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
-    Connection.database('records_' + decoded.userId)
-    await Dynamic(req.params.table).create(req.body)
+    await Dynamic('records_' + decoded.userId, req.params.table).create(req.body)
 
     return res.status(201).json({ success: true, message: 'Record created.' })
   }
@@ -44,10 +48,9 @@ class DynamicController {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
-    Connection.database('records_' + decoded.userId)
 
     try {
-      const data = await Dynamic(req.params.table).find(req.body)
+      const data = await Dynamic('records_' + decoded.userId, req.params.table).find(req.body)
       if (data.length) {
         return res.status(200).json(data)
       }
@@ -58,8 +61,7 @@ class DynamicController {
   public async remove (req: Request, res: Response) : Promise<Response> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
-    Connection.database('records_' + decoded.userId)
-    const data = await Dynamic(req.params.table).deleteOne({ _id: req.params.id })
+    const data = await Dynamic('records_' + decoded.userId, req.params.table).deleteOne({ _id: req.params.id })
     if (data.n === 1) {
       return res.status(200).json({ success: true, message: 'The record has been removed.' })
     }
@@ -74,8 +76,7 @@ class DynamicController {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded : any = jwt.decode(req.headers.authorization)
-    Connection.database('records_' + decoded.userId)
-    await Dynamic(req.params.table).updateOne({ _id: req.params.id }, req.body)
+    await Dynamic('records_' + decoded.userId, req.params.table).updateOne({ _id: req.params.id }, req.body)
 
     return res.status(200).json({ success: true, message: 'The record has been updated.' })
   }
