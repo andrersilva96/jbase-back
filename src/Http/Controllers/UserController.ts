@@ -2,11 +2,6 @@ import { Request, Response } from 'express'
 import { User } from '../../Database/Schemas/User'
 
 class UserController {
-  public async index (req: Request, res: Response): Promise<Response> {
-    const users = await User.find()
-
-    return res.json(users)
-  }
 
   public async insert (req: Request, res: Response): Promise<Response> {
     try {
