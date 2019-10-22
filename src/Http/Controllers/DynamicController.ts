@@ -14,11 +14,17 @@ class DynamicController {
     const decoded : any = jwt.decode(req.headers.authorization)
 
     const user = await User.findById(decoded.userId)
-    if (user && user.tables.length + Object.keys(req.body).length >= 10) {
+
+    if (user.tables.length >= 10) {
       return res.status(422).json({ success: false, message: 'You have many tables, try to let at least 10.' })
     }
-    user.tables = user.tables.concat(Object.keys(req.body))
-    await user.save()
+
+    for (const key of Object.keys(req.body)) {
+      if (!user.tables.includes(key)) {
+        user.tables = user.tables.concat(Object.keys(req.body))
+        await user.save()
+      }
+    }
 
     for (const obj in req.body) {
       await Dynamic('records_' + decoded.userId, obj).insertMany(req.body[obj], (err) => {
