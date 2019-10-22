@@ -12,7 +12,7 @@ routes.post('/users', UserController.insert)
 routes.put('/users/:id', UserController.update)
 
 routes.use('/dynamic/', AuthController.validToken)
-routes.post('/dynamic/insert', DynamicController.insertMany)
+routes.post('/dynamic/', DynamicController.insertMany)
 routes.post('/dynamic/:table', DynamicController.insertOne)
 routes.get('/dynamic/:table', DynamicController.list)
 routes.delete('/dynamic/:table/:id', DynamicController.remove)

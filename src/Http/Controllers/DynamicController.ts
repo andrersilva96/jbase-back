@@ -41,6 +41,11 @@ class DynamicController {
     }
 
     const decoded : any = jwt.decode(req.headers.authorization)
+    const user = await User.findById(decoded.userId)
+    if (!user.tables.includes(req.params.table)) {
+      return res.status(422).json({ success: false, message: 'Table does not exists.' })
+    }
+
     await Dynamic('records_' + decoded.userId, req.params.table).create(req.body)
 
     return res.status(201).json({ success: true, message: 'Record created.' })
