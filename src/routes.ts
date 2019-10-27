@@ -5,14 +5,15 @@ import AuthController from './Http/Controllers/AuthController'
 
 const routes = Router()
 
+// Application
 routes.post('/login', AuthController.login)
-routes.get('/newToken', AuthController.newToken)
 routes.post('/users', UserController.insert)
+routes.put('/users', AuthController.validToken, UserController.update)
+routes.get('/newToken', AuthController.newToken)
+routes.use('/generateHash', AuthController.validToken, AuthController.generateHash)
 
-routes.use('/users', AuthController.validToken)
-routes.put('/users', UserController.update)
-
-routes.use('/dynamic', AuthController.validToken)
+// User Application
+routes.use('/dynamic', AuthController.validHash)
 routes.post('/dynamic', DynamicController.insertMany)
 routes.post('/dynamic/:table', DynamicController.insertOne)
 routes.get('/dynamic/:table', DynamicController.list)

@@ -9,6 +9,7 @@ const UserSchema = new Schema({
   email: { type: String, unique: true },
   name: String,
   password: String,
+  apiHash: String,
   tables: []
 }, {
   timestamps: true
@@ -44,8 +45,5 @@ UserSchema.set('toJSON', {
     return ret
   }
 })
-
-// export const User: Model<UserModel> = Mongo.database().model<UserModel>('User', UserSchema)
-// export const User = model<UserModel>('User', UserSchema)
 
 export const User: Model<UserModel> = Mongo.database().model<UserModel>('User', UserSchema)
