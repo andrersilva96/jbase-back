@@ -57,7 +57,7 @@ class AuthController {
       const decoded : any = jwt.decode(req.headers.authorization)
       const user = await User.findById(decoded.userId)
 
-      if (user.apiHash !== decoded.apiHash) {
+      if (!decoded.apiHash || user.apiHash !== decoded.apiHash) {
         return res.status(401).json({ success: false, message: 'Token invalid.' })
       }
 
