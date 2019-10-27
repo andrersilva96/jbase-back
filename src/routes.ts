@@ -10,7 +10,7 @@ routes.get('/newToken', AuthController.newToken)
 routes.post('/users', UserController.insert)
 
 routes.use('/users', AuthController.validToken)
-routes.put('/users/:id', UserController.update)
+routes.put('/users', UserController.update)
 
 routes.use('/dynamic', AuthController.validToken)
 routes.post('/dynamic', DynamicController.insertMany)
