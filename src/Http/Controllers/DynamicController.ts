@@ -61,7 +61,7 @@ class DynamicController {
     try {
       const data = await Dynamic('records_' + decoded.userId, req.params.table).find(req.body)
       if (data.length) {
-        return res.status(200).json(data)
+        return res.status(200).json({ success: true, data: data })
       }
     } catch (err) {}
     return res.status(204).json()
