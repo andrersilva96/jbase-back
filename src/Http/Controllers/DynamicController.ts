@@ -59,12 +59,13 @@ class DynamicController {
     const decoded : any = jwt.decode(req.headers.authorization)
 
     try {
-      const perPage = 20
+      const perPage = 10
       const currentPage = Math.max(0, parseInt(req.params.page) - 1 || 0)
       const data = await Dynamic('records_' + decoded.userId, req.params.table)
         .find(req.body)
         .limit(perPage)
         .skip(perPage * currentPage)
+        .sort({ _id: req.params.sort })
 
       const count = await Dynamic('records_' + decoded.userId, req.params.table)
         .countDocuments(req.body)
