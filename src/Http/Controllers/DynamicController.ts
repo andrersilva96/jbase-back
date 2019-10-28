@@ -59,9 +59,25 @@ class DynamicController {
     const decoded : any = jwt.decode(req.headers.authorization)
 
     try {
-      const data = await Dynamic('records_' + decoded.userId, req.params.table).find(req.body)
+      const perPage = 20
+      const currentPage = Math.max(0, parseInt(req.params.page) - 1 || 0)
+      const data = await Dynamic('records_' + decoded.userId, req.params.table)
+        .find(req.body)
+        .limit(perPage)
+        .skip(perPage * currentPage)
+
+      const count = await Dynamic('records_' + decoded.userId, req.params.table)
+        .countDocuments(req.body)
+
       if (data.length) {
-        return res.status(200).json({ success: true, data: data })
+        return res.status(200).json({
+          success: true,
+          total: count,
+          perPage: perPage,
+          currentPage: currentPage + 1,
+          lastPage: Math.round(count / perPage) + 1,
+          data: data
+        })
       }
     } catch (err) {}
     return res.status(204).json()
