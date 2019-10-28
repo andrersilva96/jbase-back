@@ -47,8 +47,7 @@ class AuthController {
     await user.save()
     const token = jwt.sign(
       { userId: decoded.userId, apiHash: hash },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      process.env.JWT_SECRET
     )
     return res.status(200).send({ success: true, token: token })
   }
