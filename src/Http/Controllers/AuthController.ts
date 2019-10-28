@@ -42,7 +42,9 @@ class AuthController {
   public async generateHash (req: Request, res: Response) : Promise<Response> {
     const decoded : any = jwt.decode(req.headers.authorization)
     const hash = Math.floor(Date.now() / 1000) + Math.random().toString(36).slice(-8)
-    await User.updateOne({ _id: decoded.userId }, { apiHash: hash })
+    const user = await User.findById(decoded.userId)
+    user.apiHash = hash
+    await user.save()
     const token = jwt.sign(
       { userId: decoded.userId, apiHash: hash },
       process.env.JWT_SECRET,
