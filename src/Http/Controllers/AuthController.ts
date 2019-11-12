@@ -2,22 +2,29 @@
 import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken'
 import { User } from '../../Database/Schemas/User'
+import { UserService } from '../../Services/UserService'
+import { OAuth2Client } from 'google-auth-library'
 
 class AuthController {
   public async login (req: Request, res: Response) : Promise<Response> {
-    const data = req.body
-    const user = await User.findOne({ email: data.email })
+    try {
+      const client = new OAuth2Client('294926442816-udo2g890ubtogfaj6og0nld5200agt42.apps.googleusercontent.com')
+      const ticket = await client.verifyIdToken({
+          idToken: req.body.token,
+          audience: '294926442816-udo2g890ubtogfaj6og0nld5200agt42.apps.googleusercontent.com',
+      });
+      const user = await UserService.create(ticket.getPayload())
+      const token = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      )
 
-    if (!user.comparePassword(data.password)) return res.status(401).json({ success: false })
-
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    )
-
-    return res.status(200).send({ success: true, token: token })
-  };
+      return res.status(200).send({ success: true, token: token })
+    } catch (err) {
+      return res.status(401).json({ success: false, message: 'Google token invalid.' })
+    }
+  }
 
   public async validToken (req: Request, res: Response, next: NextFunction) : Promise<Response> {
     try {
