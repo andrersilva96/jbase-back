@@ -1,4 +1,4 @@
-export abstract class Validate {
+export abstract class ValidateService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static json (data:any, checkFirstNivel = false) :boolean {
     if (data.constructor !== Object || Object.keys(data).length === 0 || Object.keys(data).length > 10) {

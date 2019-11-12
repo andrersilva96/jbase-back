@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { Dynamic } from '../../Database/Schemas/Dynamic'
-import { Validate } from '../../Services/ValidateService'
+import { ValidateService } from '../../Services/ValidateService'
 import * as jwt from 'jsonwebtoken'
 import { User } from '../../Database/Schemas/User'
 
 class DynamicController {
   public async insertMany (req: Request, res: Response) : Promise<Response> {
-    if (!Validate.json(req.body)) {
+    if (!ValidateService.json(req.body)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
@@ -36,7 +36,7 @@ class DynamicController {
   }
 
   public async insertOne (req: Request, res: Response) : Promise<Response> {
-    if (!Validate.json(req.body, true)) {
+    if (!ValidateService.json(req.body, true)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
@@ -52,7 +52,7 @@ class DynamicController {
   }
 
   public async list (req: Request, res: Response) : Promise<Response> {
-    if (Object.keys(req.body).length !== 0 && !Validate.json(req.body, true)) {
+    if (Object.keys(req.body).length !== 0 && !ValidateService.json(req.body, true)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
@@ -95,7 +95,7 @@ class DynamicController {
   }
 
   public async update (req: Request, res: Response) : Promise<Response> {
-    if (!Validate.json(req.body, true)) {
+    if (!ValidateService.json(req.body, true)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
