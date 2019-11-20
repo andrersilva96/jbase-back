@@ -3,17 +3,14 @@ import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken'
 import { User } from '../../Database/Schemas/User'
 import { UserService } from '../../Services/UserService'
-import { OAuth2Client } from 'google-auth-library'
+import * as admin from 'firebase-admin';
 
 class AuthController {
   public async login (req: Request, res: Response) : Promise<Response> {
     try {
-      const client = new OAuth2Client('294926442816-udo2g890ubtogfaj6og0nld5200agt42.apps.googleusercontent.com')
-      const ticket = await client.verifyIdToken({
-          idToken: req.body.token,
-          audience: '294926442816-udo2g890ubtogfaj6og0nld5200agt42.apps.googleusercontent.com',
-      });
-      const user = await UserService.create(ticket.getPayload())
+      !admin.apps.length ? admin.initializeApp({ serviceAccountId: process.env.GOOGLE_ACCOUNT_ID }) : admin.app()
+      const data = await admin.auth().verifyIdToken(req.body.token)
+      const user = await UserService.create(data)
       const token = jwt.sign(
         { userId: user.id },
         process.env.JWT_SECRET,
