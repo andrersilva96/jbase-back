@@ -3,13 +3,12 @@ import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken'
 import { User } from '../../Database/Schemas/User'
 import { UserService } from '../../Services/UserService'
-import * as admin from 'firebase-admin';
+import { FirebaseService } from '../..//Services/FirebaseService'
 
 class AuthController {
   public async login (req: Request, res: Response) : Promise<Response> {
     try {
-      !admin.apps.length ? admin.initializeApp({ serviceAccountId: process.env.GOOGLE_ACCOUNT_ID }) : admin.app()
-      const data = await admin.auth().verifyIdToken(req.body.token)
+      const data = await FirebaseService.getUser(req.body.token)
       const user = await UserService.create(data)
       const token = jwt.sign(
         { userId: user.id },
