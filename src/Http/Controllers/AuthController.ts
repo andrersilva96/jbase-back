@@ -8,17 +8,17 @@ import { FirebaseService } from '../..//Services/FirebaseService'
 class AuthController {
   public async login (req: Request, res: Response) : Promise<Response> {
     try {
-      const data = await FirebaseService.getUser(req.body.token)
+      const data = await FirebaseService.getUser(req.headers.authorization)
       const user = await UserService.create(data)
       const token = jwt.sign(
         { userId: user.id },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '31d' }
       )
 
       return res.status(200).send({ success: true, token: token })
     } catch (err) {
-      return res.status(401).json({ success: false, message: 'Google token invalid.' })
+      return res.status(401).json({ success: false, message: 'Firebase token invalid.' })
     }
   }
 
