@@ -9,7 +9,7 @@ const routes = Router()
 routes.post('/login', AuthController.login)
 routes.put('/users', AuthController.validToken, UserController.update)
 routes.get('/newToken', AuthController.newToken)
-routes.use('/generateHash', AuthController.validToken, AuthController.generateHash)
+routes.get('/generateHash', AuthController.validToken, AuthController.generateHash)
 
 // User Application
 routes.use('/dynamic', AuthController.validHash)
