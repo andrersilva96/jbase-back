@@ -3,6 +3,6 @@ export interface UserInterface {
   email: string,
   name: string,
   apiHash?: string,
-  tables?: Array<string>
+  tables: Array<string>
   comparePassword(password: string): boolean
 }

@@ -6,24 +6,32 @@ import * as jwt from 'jsonwebtoken'
 import { User } from '../../Database/Schemas/User'
 
 class DynamicController {
+  public async addTable (req: Request, res: Response) : Promise<Response> {
+    const decoded : any = jwt.decode(req.headers.authorization)
+    const user: any = await User.findById(decoded.userId)
+
+    if (user.tables.length > 10) {
+      return res.status(200).json({ success: false, message: 'You have many tables, try to let at least 10.' })
+    }
+
+    if (!user.tables.includes(req.body.table)) {
+      user.tables.push(req.body.table)
+      await user.save()
+      return res.status(201).json({ success: true, message: 'Table created.' })
+    }
+
+    return res.status(200).json({ success: false, message: 'The table already exists.' })
+  }
+
   public async insertMany (req: Request, res: Response) : Promise<Response> {
     if (!ValidateService.json(req.body)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })
     }
 
     const decoded : any = jwt.decode(req.headers.authorization)
-
     const user = await User.findById(decoded.userId)
-
-    if (user.tables.length >= 10) {
-      return res.status(422).json({ success: false, message: 'You have many tables, try to let at least 10.' })
-    }
-
-    for (const key of Object.keys(req.body)) {
-      if (!user.tables.includes(key)) {
-        user.tables = user.tables.concat(Object.keys(req.body))
-        await user.save()
-      }
+    if (!user.tables.includes(req.params.table)) {
+      return res.status(422).json({ success: false, message: 'Table does not exists.' })
     }
 
     for (const obj in req.body) {

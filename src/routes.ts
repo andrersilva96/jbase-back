@@ -10,6 +10,7 @@ routes.post('/login', AuthController.login)
 routes.put('/users', AuthController.validToken, UserController.update)
 routes.get('/newToken', AuthController.newToken)
 routes.get('/generateHash', AuthController.validToken, AuthController.generateHash)
+routes.post('/addTable', AuthController.validToken, DynamicController.addTable)
 
 // User Application
 routes.use('/dynamic', AuthController.validHash)
