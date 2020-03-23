@@ -46,12 +46,12 @@ class AuthController {
     const decoded : any = jwt.decode(req.headers.authorization)
     const hash = Math.floor(Date.now() / 1000) + Math.random().toString(36).slice(-8)
     const user = await User.findById(decoded.userId)
-    user.apiHash = hash
-    await user.save()
     const token = jwt.sign(
       { userId: decoded.userId, apiHash: hash },
       process.env.JWT_SECRET
     )
+    user.apiHash = token
+    await user.save()
     return res.status(200).send({ success: true, token: token })
   }
 
