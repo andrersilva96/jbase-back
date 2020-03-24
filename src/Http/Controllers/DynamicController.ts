@@ -10,7 +10,7 @@ class DynamicController {
     const decoded : any = jwt.decode(req.headers.authorization)
     const user: any = await User.findById(decoded.userId)
 
-    if (user.tables.length > 10) {
+    if (user.tables.length >= 10) {
       return res.status(200).json({ success: false, message: 'You have many tables, try to let at least 10.' })
     }
 

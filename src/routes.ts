@@ -7,7 +7,7 @@ const routes = Router()
 
 // Application
 routes.post('/login', AuthController.login)
-routes.put('/users', AuthController.validToken, UserController.update)
+routes.get('/user', AuthController.validToken, UserController.getUser)
 routes.get('/newToken', AuthController.newToken)
 routes.get('/generateHash', AuthController.validToken, AuthController.generateHash)
 routes.post('/addTable', AuthController.validToken, DynamicController.addTable)
