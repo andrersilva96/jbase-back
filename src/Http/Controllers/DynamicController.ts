@@ -23,6 +23,22 @@ class DynamicController {
     return res.status(200).json({ success: false, message: 'The table already exists.' })
   }
 
+  public async removeTable (req: Request, res: Response) : Promise<Response> {
+    const decoded : any = jwt.decode(req.headers.authorization)
+    const user : any = await User.findById(decoded.userId)
+
+    try {
+      let index = user.tables.indexOf(req.body.table)
+
+      if (index > -1) {
+        user.tables.splice(index, 1)
+        await user.save()
+        await Dynamic('records_' + decoded.userId, req.body.table).collection.drop()
+      }
+    } catch (err) { }
+
+    return res.status(200).json({ success: true, message: 'Table successfully removed.' })
+  }
   public async insertMany (req: Request, res: Response) : Promise<Response> {
     if (!ValidateService.json(req.body)) {
       return res.status(422).json({ success: false, message: 'Your JSON does not follow the pattern.' })

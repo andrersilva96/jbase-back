@@ -11,6 +11,7 @@ routes.get('/user', AuthController.validToken, UserController.getUser)
 routes.get('/newToken', AuthController.newToken)
 routes.get('/generateHash', AuthController.validToken, AuthController.generateHash)
 routes.post('/addTable', AuthController.validToken, DynamicController.addTable)
+routes.delete('/removeTable', AuthController.validToken, DynamicController.removeTable)
 
 // User Application
 routes.use('/dynamic', AuthController.validHash)
