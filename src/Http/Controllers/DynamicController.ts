@@ -103,7 +103,7 @@ class DynamicController {
           total: count,
           perPage: perPage,
           currentPage: currentPage + 1,
-          lastPage: Math.round(count / perPage) + 1,
+          lastPage: parseInt((count / perPage).toString()) + 1,
           data: data
         })
       }
