@@ -9,7 +9,7 @@ const routes = Router()
 routes.post('/login', AuthController.login)
 routes.get('/user', AuthController.validToken, UserController.getUser)
 routes.get('/newToken', AuthController.newToken)
-routes.get('/generateHash', AuthController.validToken, AuthController.generateHash)
+routes.get('/generateToken', AuthController.validToken, AuthController.generateToken)
 routes.post('/addTable', AuthController.validToken, DynamicController.addTable)
 routes.delete('/removeTable', AuthController.validToken, DynamicController.removeTable)
 

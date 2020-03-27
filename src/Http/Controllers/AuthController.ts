@@ -34,23 +34,23 @@ class AuthController {
   public async newToken (req: Request, res: Response) : Promise<Response> {
     const decoded : any = jwt.decode(req.headers.authorization)
     const token = jwt.sign(
-      { userId: decoded.userId, apiHash: decoded.apiHash ? decoded.apiHash : false },
+      { userId: decoded.userId, apiToken: decoded.apiToken ? true : false },
       process.env.JWT_SECRET,
-      { expiresIn: decoded.apiHash ? '' : '31d' }
+      { expiresIn: decoded.apiToken ? '' : '31d' }
     )
 
     return res.status(200).send({ success: true, token: token })
   }
 
-  public async generateHash (req: Request, res: Response) : Promise<Response> {
+  public async generateToken (req: Request, res: Response) : Promise<Response> {
     const decoded : any = jwt.decode(req.headers.authorization)
     const hash = Math.floor(Date.now() / 1000) + Math.random().toString(36).slice(-8)
     const user = await User.findById(decoded.userId)
     const token = jwt.sign(
-      { userId: decoded.userId, apiHash: hash },
+      { userId: decoded.userId, apiToken: hash },
       process.env.JWT_SECRET
     )
-    user.apiHash = token
+    user.apiToken = token
     await user.save()
     return res.status(200).send({ success: true, token: token })
   }
@@ -61,7 +61,7 @@ class AuthController {
       const decoded : any = jwt.decode(req.headers.authorization)
       const user = await User.findById(decoded.userId)
 
-      if (!decoded.apiHash || user.apiHash !== decoded.apiHash) {
+      if (!decoded.apiToken || user.apiToken !== req.headers.authorization) {
         return res.status(401).json({ success: false, message: 'Token invalid.' })
       }
 

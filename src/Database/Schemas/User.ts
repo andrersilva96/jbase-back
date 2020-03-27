@@ -8,7 +8,7 @@ export interface UserModel extends UserInterface, Document {}
 const UserSchema = new Schema({
   email: { type: String, unique: true },
   name: String,
-  apiHash: String,
+  apiToken: String,
   tables: []
 }, {
   timestamps: true
