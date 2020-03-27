@@ -1,6 +1,5 @@
 import { Document, Schema, Model } from 'mongoose'
 import { UserInterface } from '../Interfaces/UserInterface'
-import bcrypt from 'bcrypt-nodejs'
 import Mongo from '../Mongo'
 
 export interface UserModel extends UserInterface, Document {}
