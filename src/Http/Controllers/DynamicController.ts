@@ -129,11 +129,6 @@ class DynamicController {
     return res.status(200).json({ success: true, message: 'The record has been updated.' })
   }
 
-  public async drop (req: Request, res: Response) : Promise<Response> {
-    const decoded : any = jwt.decode(req.headers.authorization)
-    await Dynamic('records_' + decoded.userId, req.params.table).collection.drop()
-    return res.status(200).json({ success: true, message: 'The table has been dropped.' })
-  }
 }
 
 export default new DynamicController()

@@ -20,6 +20,5 @@ routes.post('/dynamic/:table', DynamicController.insertOne)
 routes.get('/dynamic/:table/:sort?/:page?', DynamicController.list)
 routes.delete('/dynamic/:table/:id', DynamicController.remove)
 routes.put('/dynamic/:table/:id', DynamicController.update)
-routes.delete('/dynamic/:table', DynamicController.drop)
 
 export default routes
