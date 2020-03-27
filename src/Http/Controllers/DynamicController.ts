@@ -46,8 +46,11 @@ class DynamicController {
 
     const decoded : any = jwt.decode(req.headers.authorization)
     const user = await User.findById(decoded.userId)
-    if (!user.tables.includes(req.params.table)) {
-      return res.status(422).json({ success: false, message: 'Table does not exists.' })
+
+    for (const obj of Object.keys(req.body)) {
+      if (!user.tables.includes(obj)) {
+        return res.status(422).json({ success: false, message: 'Table '+obj+' does not exists.' })
+      }
     }
 
     for (const obj in req.body) {
@@ -67,7 +70,7 @@ class DynamicController {
     const decoded : any = jwt.decode(req.headers.authorization)
     const user = await User.findById(decoded.userId)
     if (!user.tables.includes(req.params.table)) {
-      return res.status(422).json({ success: false, message: 'Table does not exists.' })
+      return res.status(422).json({ success: false, message: 'Table '+req.params.table+' does not exists.' })
     }
 
     await Dynamic('records_' + decoded.userId, req.params.table).create(req.body)
